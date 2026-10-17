@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c65b22"/><stop offset="1" stop-color="#7a2a10"/></linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#f)"/>
+  <circle cx="330" cy="70" r="90" fill="#ffffff" opacity=".07"/>
+  <g transform="translate(60 110)">
+    <rect x="0" y="22" width="150" height="110" rx="16" fill="#a8401b"/>
+    <rect x="0" y="22" width="150" height="110" rx="16" fill="none" stroke="#ffd7b8" stroke-width="5"/>
+    <path d="M50 22v-12a10 10 0 0 1 10-10h30a10 10 0 0 1 10 10v12" fill="none" stroke="#ffd7b8" stroke-width="7"/>
+    <path d="M0 62h150" stroke="#ffd7b8" stroke-width="5"/>
+    <rect x="62" y="52" width="26" height="22" rx="5" fill="#ffc531"/>
+  </g>
+  <path d="M230 230l40-44 30 24 62-72" fill="none" stroke="#ffc531" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M340 128h28v28" fill="none" stroke="#ffc531" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#ffc531" stroke="#a8401b" stroke-width="3">
+    <ellipse cx="290" cy="262" rx="26" ry="9"/><ellipse cx="290" cy="252" rx="26" ry="9"/><ellipse cx="290" cy="242" rx="26" ry="9"/>
+  </g>
+  <text x="40" y="70" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="30" fill="#ffffff" opacity=".9">FCFA</text>
+</svg>

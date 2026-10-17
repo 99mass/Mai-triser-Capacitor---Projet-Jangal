@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-figtree);
+  --font-heading: var(--font-figtree);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Identité Jàngal (relevée sur la maquette) */
+  --color-marine: var(--marine);
+  --color-orange: var(--orange);
+  --color-orange-texte: var(--orange-texte);
+  --color-orange-doux: var(--orange-doux);
+  --color-orange-bord: var(--orange-bord);
+  --color-vert: var(--vert);
+  --color-vert-doux: var(--vert-doux);
+  --color-vert-bord: var(--vert-bord);
+  --color-lien: var(--lien);
+  --color-piste: var(--piste);
+  --color-creme: var(--creme);
+  --color-surface: var(--surface);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  --background: #faf8f3;
+  --foreground: #0f2a4a;
+  --card: #ffffff;
+  --card-foreground: #0f2a4a;
+  --popover: #ffffff;
+  --popover-foreground: #0f2a4a;
+  --primary: #0f305b;
+  --primary-foreground: #ffffff;
+  --secondary: #eef2f7;
+  --secondary-foreground: #0f305b;
+  --muted: #eef2f7;
+  --muted-foreground: #55657d;
+  --accent: #fef2e1;
+  --accent-foreground: #0f305b;
+  --destructive: #c62828;
+  --border: #e3e8ef;
+  --input: #d5dce6;
+  --ring: #f67b0d;
+
+  --marine: #0a3054;
+  --orange: #f67b0d;
+  --orange-texte: #b85000;
+  --orange-doux: #fef2e1;
+  --orange-bord: #f6a04a;
+  --vert: #157a43;
+  --vert-doux: #dcf3e4;
+  --vert-bord: #8fd3a8;
+  --lien: #2a64c4;
+  --piste: #e5ebf1;
+  --creme: #fdf8ef;
+  --surface: #ffffff;
+}
+
+.dark {
+  --background: #0b1424;
+  --foreground: #eef2f8;
+  --card: #132039;
+  --card-foreground: #eef2f8;
+  --popover: #132039;
+  --popover-foreground: #eef2f8;
+  --primary: #f68a1f;
+  --primary-foreground: #0b1424;
+  --secondary: #1c2c48;
+  --secondary-foreground: #eef2f8;
+  --muted: #1c2c48;
+  --muted-foreground: #a9b6ca;
+  --accent: #2a2416;
+  --accent-foreground: #eef2f8;
+  --destructive: #ff6b6b;
+  --border: #24365a;
+  --input: #2e4268;
+  --ring: #f68a1f;
+
+  --marine: #f1f5fb;
+  --orange: #f68a1f;
+  --orange-texte: #ffad5c;
+  --orange-doux: #2b2112;
+  --orange-bord: #c66d14;
+  --vert: #6fdc9a;
+  --vert-doux: #143525;
+  --vert-bord: #2f7a4f;
+  --lien: #7fb0ff;
+  --piste: #24365a;
+  --creme: #0e1a2e;
+  --surface: #132039;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overscroll-behavior-y: none;
+  }
+  /* Les champs de moins de 16 px déclenchent un zoom sur mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility px-safe {
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+}
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+@utility ombre-carte {
+  box-shadow:
+    0 1px 2px rgb(15 42 74 / 0.04),
+    0 4px 16px rgb(15 42 74 / 0.06);
+  .dark & {
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset;
+  }
+}
