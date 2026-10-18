@@ -11,6 +11,7 @@ import { IconeCategorie } from "@/components/icones";
 import { Chargement } from "@/components/etats";
 import { Button } from "@/components/ui/button";
 import { enregistrerProfil } from "@/lib/storage";
+import { intercepterRetour } from "@/lib/platform/app-lifecycle";
 import { cn } from "@/lib/utils";
 
 type Etape = 0 | 1 | 2 | 3;
@@ -30,6 +31,17 @@ export default function Onboarding() {
     verifie.current = true;
     if (profil) router.replace("/accueil/");
   }, [pret, profil, router]);
+
+  // Les étapes ne sont pas des pages : le bouton retour Android ramène à l'étape précédente.
+  useEffect(
+    () =>
+      intercepterRetour(() => {
+        if (etape !== 1 && etape !== 2) return false;
+        setEtape((etape - 1) as Etape);
+        return true;
+      }),
+    [etape],
+  );
 
   if (!pret || (profil && etape < 3)) return <Chargement />;
 
@@ -212,7 +224,7 @@ function Presentation({ onSuivant }: { onSuivant: () => void }) {
           pour ton avenir
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          Des cours pratiques et accessibles pour les étudiants et les jeunes professionnels en Afrique de l&apos;Ouest.
+          Des cours pratiques et accessibles pour les étudiants et les jeunes professionnels en Afrique de l&apos;Ouest..
         </p>
         <div className="mt-6 flex justify-center gap-2" aria-label="Étape 1 sur 3">
           <span className="h-2 w-6 rounded-full bg-orange" />
