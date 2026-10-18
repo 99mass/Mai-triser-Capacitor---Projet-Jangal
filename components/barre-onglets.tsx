@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookCheck, BookOpen, House, UserRound, type LucideIcon } from "lucide-react";
+import { intercepterRetour, quitterApp } from "@/lib/platform/app-lifecycle";
 import { cn } from "@/lib/utils";
 
 const ONGLETS: { href: string; libelle: string; icone: LucideIcon }[] = [
@@ -12,9 +14,27 @@ const ONGLETS: { href: string; libelle: string; icone: LucideIcon }[] = [
   { href: "/profil/", libelle: "Profil", icone: UserRound },
 ];
 
-/** Barre d'onglets du bas, au-dessus de la zone sûre (barre de gestes Android / iPhone). */
+
+/**
+ * Barre d'onglets du bas, au-dessus de la zone sûre (barre de gestes Android / iPhone).
+ *
+ * Comme dans une app native, changer d'onglet n'empile pas d'historique : les
+ * liens utilisent `replace`. Les onglets sont les écrans racines de l'app : le
+ * bouton retour Android y ferme l'app, quel que soit l'onglet.
+ */
 export function BarreOnglets() {
   const chemin = usePathname();
+
+  // Monté uniquement sur les écrans à onglets : les cours, leçons et paiements
+  // gardent le retour normal vers l'écran précédent.
+  useEffect(
+    () =>
+      intercepterRetour(() => {
+        void quitterApp();
+        return true;
+      }),
+    [],
+  );
 
   return (
     <nav
@@ -28,6 +48,7 @@ export function BarreOnglets() {
             <li key={href}>
               <Link
                 href={href}
+                replace
                 aria-current={actif ? "page" : undefined}
                 className={cn(
                   "flex min-h-16 flex-col items-center justify-center gap-1 text-[12px] font-medium transition-colors active:bg-muted/60",

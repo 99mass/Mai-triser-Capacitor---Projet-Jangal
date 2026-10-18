@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Variante appliquée automatiquement quand le téléphone est en mode sombre. -->
+<resources>
+    <color name="jangal_fond">#0B1424</color>
+</resources>

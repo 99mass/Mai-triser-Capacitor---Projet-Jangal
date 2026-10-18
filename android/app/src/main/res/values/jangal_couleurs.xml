@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Couleurs Jàngal utilisées par le système Android (hors WebView). -->
+<resources>
+    <!-- Fond de l'écran de démarrage, identique au fond de l'app (variable CSS background). -->
+    <color name="jangal_fond">#FAF8F3</color>
+</resources>

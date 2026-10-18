@@ -2,13 +2,16 @@
 //
 // Toutes les données d'apprentissage passent par ici : profil, progression,
 // notes, résultats de quiz, cours achetés, téléchargements et activité.
-// L'API est asynchrone pour pouvoir remplacer l'implémentation localStorage par
-// @capacitor/preferences, SQLite (@capacitor-community/sqlite) ou une API
-// distante sans toucher aux composants.
+// L'API est asynchrone : l'implémentation a pu passer de localStorage à
+// @capacitor/preferences sans toucher aux composants. Prochaine étape possible :
+// SQLite (@capacitor-community/sqlite) ou une API distante.
 //
+// Le stockage physique passe par `stockageCleValeur` (lib/platform/preferences) :
+// Preferences natives dans l'app, localStorage dans le navigateur.
 // Aucun composant n'appelle localStorage directement.
 
 import type { CategorieId } from "@/data/types";
+import { stockageCleValeur as kv } from "@/lib/platform/preferences";
 
 const PREFIXE = "jangal.donnees.";
 const VERSION = 1;
@@ -80,18 +83,13 @@ const VALEURS_INITIALES: Omit<Schema, "version"> = {
   activite: [],
 };
 
-// ─── Implémentation localStorage ────────────────────────────────────────────
+// ─── Implémentation (Preferences natives ou localStorage) ───────────────────
 
 const auditeurs = new Set<() => void>();
 
-function disponible(): boolean {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
-}
-
 async function lire<K extends Cle>(cle: K): Promise<Schema[K]> {
-  if (!disponible()) return structuredClone(VALEURS_INITIALES[cle]) as Schema[K];
   try {
-    const brut = window.localStorage.getItem(PREFIXE + cle);
+    const brut = await kv.lire(PREFIXE + cle);
     return brut === null ? (structuredClone(VALEURS_INITIALES[cle]) as Schema[K]) : (JSON.parse(brut) as Schema[K]);
   } catch {
     return structuredClone(VALEURS_INITIALES[cle]) as Schema[K];
@@ -99,10 +97,9 @@ async function lire<K extends Cle>(cle: K): Promise<Schema[K]> {
 }
 
 async function ecrire<K extends Cle>(cle: K, valeur: Schema[K]): Promise<void> {
-  if (!disponible()) return;
   try {
-    window.localStorage.setItem(PREFIXE + cle, JSON.stringify(valeur));
-    window.localStorage.setItem(PREFIXE + "version", String(VERSION));
+    await kv.ecrire(PREFIXE + cle, JSON.stringify(valeur));
+    await kv.ecrire(PREFIXE + "version", String(VERSION));
   } catch {
     throw new Error("Espace de stockage plein. Supprimez des téléchargements ou votre photo de profil.");
   }
@@ -249,19 +246,15 @@ export async function retirerTelechargements(coursId: string, leconIds?: string[
 
 /** Taille approximative des données d'apprentissage (hors vidéos), en octets. */
 export async function tailleDonnees(): Promise<number> {
-  if (!disponible()) return 0;
   let total = 0;
   for (const cle of Object.keys(VALEURS_INITIALES)) {
-    const brut = window.localStorage.getItem(PREFIXE + cle);
+    const brut = await kv.lire(PREFIXE + cle);
     if (brut) total += (PREFIXE.length + cle.length + brut.length) * 2; // UTF-16
   }
   return total;
 }
 
 export async function reinitialiserTout(): Promise<void> {
-  if (!disponible()) return;
-  for (const cle of [...Object.keys(VALEURS_INITIALES), "version"]) {
-    window.localStorage.removeItem(PREFIXE + cle);
-  }
+  await Promise.all([...Object.keys(VALEURS_INITIALES), "version"].map((cle) => kv.supprimer(PREFIXE + cle)));
   auditeurs.forEach((f) => f());
 }
