@@ -33,6 +33,11 @@ export function intercepterRetour(gestionnaire: GestionnaireRetour): () => void 
   };
 }
 
+/** Ferme l'app comme le fait Android : mise en arrière-plan, l'app reste prête à être rouverte. */
+export async function quitterApp(): Promise<void> {
+  if (estNatif()) await App.minimizeApp();
+}
+
 export async function initialiserApp(): Promise<void> {
   // Sur le web, le navigateur gère déjà son propre bouton retour.
   if (!estNatif() || initialise) return;
@@ -44,6 +49,6 @@ export async function initialiserApp(): Promise<void> {
       if (gestionnaires[i]({ peutRevenir: canGoBack })) return;
     }
     if (canGoBack) window.history.back();
-    else void App.minimizeApp();
+    else void quitterApp();
   });
 }

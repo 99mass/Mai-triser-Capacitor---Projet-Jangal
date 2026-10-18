@@ -2,15 +2,13 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { BookCheck, BookOpen, House, UserRound, type LucideIcon } from "lucide-react";
-import { intercepterRetour } from "@/lib/platform/app-lifecycle";
+import { intercepterRetour, quitterApp } from "@/lib/platform/app-lifecycle";
 import { cn } from "@/lib/utils";
 
-const ACCUEIL = "/accueil/";
-
 const ONGLETS: { href: string; libelle: string; icone: LucideIcon }[] = [
-  { href: ACCUEIL, libelle: "Accueil", icone: House },
+  { href: "/accueil/", libelle: "Accueil", icone: House },
   { href: "/catalogue/", libelle: "Catalogue", icone: BookOpen },
   { href: "/mes-cours/", libelle: "Mes cours", icone: BookCheck },
   { href: "/profil/", libelle: "Profil", icone: UserRound },
@@ -20,23 +18,22 @@ const ONGLETS: { href: string; libelle: string; icone: LucideIcon }[] = [
 /**
  * Barre d'onglets du bas, au-dessus de la zone sûre (barre de gestes Android / iPhone).
  *
- * Comme dans une app native (règle Material Design), changer d'onglet n'empile
- * pas d'historique : les liens utilisent `replace`. Le bouton retour depuis un
- * autre onglet ramène à l'Accueil, puis un second retour quitte l'app.
+ * Comme dans une app native, changer d'onglet n'empile pas d'historique : les
+ * liens utilisent `replace`. Les onglets sont les écrans racines de l'app : le
+ * bouton retour Android y ferme l'app, quel que soit l'onglet.
  */
 export function BarreOnglets() {
   const chemin = usePathname();
-  const router = useRouter();
 
+  // Monté uniquement sur les écrans à onglets : les cours, leçons et paiements
+  // gardent le retour normal vers l'écran précédent.
   useEffect(
     () =>
-      intercepterRetour(({ peutRevenir }) => {
-        // Arrivé ici par un lien (ex. « Voir tout ») : retour normal dans l'historique.
-        if (peutRevenir || chemin === ACCUEIL) return false;
-        router.replace(ACCUEIL);
+      intercepterRetour(() => {
+        void quitterApp();
         return true;
       }),
-    [chemin, router],
+    [],
   );
 
   return (
