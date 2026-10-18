@@ -15,8 +15,11 @@
 import { App } from "@capacitor/app";
 import { estNatif } from "./index";
 
-/** Retourne `true` si le retour a été traité (on ne remonte alors pas l'historique). */
-type GestionnaireRetour = () => boolean;
+/**
+ * Retourne `true` si le retour a été traité (on ne remonte alors pas l'historique).
+ * `peutRevenir` indique s'il existe une page précédente dans l'historique.
+ */
+type GestionnaireRetour = (contexte: { peutRevenir: boolean }) => boolean;
 
 const gestionnaires: GestionnaireRetour[] = [];
 let initialise = false; // évite un double écouteur (mode strict de React en dev)
@@ -38,7 +41,7 @@ export async function initialiserApp(): Promise<void> {
   await App.addListener("backButton", ({ canGoBack }) => {
     // Le dernier écran inscrit est prioritaire.
     for (let i = gestionnaires.length - 1; i >= 0; i--) {
-      if (gestionnaires[i]()) return;
+      if (gestionnaires[i]({ peutRevenir: canGoBack })) return;
     }
     if (canGoBack) window.history.back();
     else void App.minimizeApp();
